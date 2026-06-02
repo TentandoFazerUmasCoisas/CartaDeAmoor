@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uma Carta Especial Para Você 💌</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --rose: #c8506a;
+  --rose-light: #f2c2cc;
+  --rose-pale: #fdf0f2;
+  --gold: #c9a96e;
+  --cream: #fef9f0;
+  --ink: #3a2a2e;
+}
+
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  font-family: 'Lora', serif;
+  background: var(--cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.bg {
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, #fde8ee 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, #fde0e8 0%, transparent 50%),
+    radial-gradient(ellipse at 60% 80%, #fff0e0 0%, transparent 50%),
+    var(--cream);
+}
+.bg::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(200,80,106,.06) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.petal {
+  position: fixed;
+  animation: fall linear infinite;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  user-select: none;
+}
+@keyframes fall {
+  0%   { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+  10%  { opacity: 0.6; }
+  90%  { opacity: 0.4; }
+  100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
+}
+
+.scene {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.envelope-wrap {
+  cursor: pointer;
+  filter: drop-shadow(0 20px 60px rgba(200,80,106,.28));
+  transition: transform .3s, filter .3s;
+  position: relative;
+  width: 340px;
+  height: 220px;
+}
+.envelope-wrap:hover:not(.opened) {
+  transform: translateY(-6px) scale(1.02);
+  filter: drop-shadow(0 30px 80px rgba(200,80,106,.42));
+}
+
+.env-body {
+  position: absolute; inset: 0;
+  background: linear-gradient(160deg, #fff5f7 0%, #fde8ee 100%);
+  border-radius: 4px 4px 12px 12px;
+  border: 1.5px solid var(--rose-light);
+}
+.env-body::after {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(135deg, transparent 49.5%, rgba(200,80,106,.08) 49.5%, rgba(200,80,106,.08) 50.5%, transparent 50.5%),
+    linear-gradient(225deg, transparent 49.5%, rgba(200,80,106,.08) 49.5%, rgba(200,80,106,.08) 50.5%, transparent 50.5%);
+}
+
+.env-left {
+  position: absolute; bottom: 0; left: 0;
+  border-style: solid;
+  border-width: 110px 0 0 170px;
+  border-color: transparent transparent transparent rgba(200,80,106,.1);
+  z-index: 2;
+}
+.env-right {
+  position: absolute; bottom: 0; right: 0;
+  border-style: solid;
+  border-width: 110px 170px 0 0;
+  border-color: transparent rgba(200,80,106,.1) transparent transparent;
+  z-index: 2;
+}
+.env-bottom {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 0;
+  border-left: 170px solid transparent;
+  border-right: 170px solid transparent;
+  border-bottom: 120px solid rgba(220,140,160,.13);
+  z-index: 3;
+}
+
+.env-flap-wrap {
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 130px;
+  overflow: hidden;
+  z-index: 6;
+  transform-origin: top center;
+  transition: transform .75s cubic-bezier(.4,0,.2,1);
+}
+.env-flap {
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 0;
+  border-left: 170px solid transparent;
+  border-right: 170px solid transparent;
+  border-top: 130px solid #fde0e8;
+  filter: drop-shadow(0 6px 10px rgba(200,80,106,.18));
+}
+
+.seal {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 52px; height: 52px;
+  background: radial-gradient(circle at 38% 32%, #e87090, var(--rose) 55%, #a03050);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+  z-index: 7;
+  box-shadow: 0 4px 16px rgba(160,48,80,.45), inset 0 -2px 4px rgba(0,0,0,.12);
+  transition: transform .4s ease, opacity .4s ease;
+  pointer-events: none;
+}
+
+.hint {
+  font-style: italic;
+  color: var(--rose);
+  font-size: .9rem;
+  opacity: .8;
+  animation: blink 2.2s ease-in-out infinite;
+  transition: opacity .5s;
+}
+@keyframes blink { 0%,100%{opacity:.4} 50%{opacity:.9} }
+
+.envelope-wrap.opened { cursor: default; }
+.envelope-wrap.opened .env-flap-wrap { transform: rotateX(-180deg); }
+.envelope-wrap.opened .seal { opacity: 0; transform: translate(-50%, -50%) scale(.4); }
+
+.letter-overlay {
+  position: fixed; inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(58,42,46,.55);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .5s ease;
+  padding: 16px;
+  overflow-y: auto;
+}
+.letter-overlay.show { opacity: 1; pointer-events: auto; }
+
+.letter-card {
+  background: #fffdf8;
+  border-radius: 12px;
+  width: min(420px, 100%);
+  box-shadow: 0 32px 100px rgba(0,0,0,.22);
+  border: 1px solid rgba(200,80,106,.15);
+  overflow: hidden;
+  transform: translateY(40px) scale(.95);
+  transition: transform .6s cubic-bezier(.2,.8,.3,1);
+  position: relative;
+}
+.letter-overlay.show .letter-card { transform: translateY(0) scale(1); }
+
+.letter-top-bar {
+  height: 4px;
+  background: linear-gradient(90deg, var(--rose), var(--gold), var(--rose));
+}
+
+.letter-inner { padding: 28px 28px 24px; }
+
+.close-letter {
+  position: absolute;
+  top: 14px; right: 16px;
+  background: transparent;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+  color: #bbb;
+  line-height: 1;
+  transition: color .2s, transform .2s;
+  z-index: 5;
+}
+.close-letter:hover { color: var(--rose); transform: scale(1.2); }
+
+.letter-to {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  color: var(--rose);
+  font-size: .85rem;
+  margin-bottom: 4px;
+  letter-spacing: .04em;
+}
+.flourish {
+  text-align: center;
+  color: var(--gold);
+  letter-spacing: 6px;
+  font-size: .9rem;
+  margin: 10px 0 14px;
+}
+
+.counter-banner {
+  background: linear-gradient(135deg, #fff0f3, #fff8e8);
+  border: 1px solid rgba(200,80,106,.18);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 18px;
+  text-align: center;
+}
+.counter-number {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.4rem;
+  color: var(--rose);
+  line-height: 1;
+  display: block;
+}
+.counter-label {
+  font-size: .78rem;
+  color: #a07880;
+  font-style: italic;
+  margin-top: 2px;
+}
+
+.photo-strip {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.photo-strip::-webkit-scrollbar { display: none; }
+
+.photo-slot {
+  flex: 0 0 100px;
+  height: 100px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid rgba(200,80,106,.2);
+  background: var(--rose-pale);
+  position: relative;
+  cursor: pointer;
+  transition: transform .2s, border-color .2s;
+}
+.photo-slot:hover { transform: scale(1.04); border-color: var(--rose); }
+.photo-slot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.photo-slot .photo-placeholder {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  color: var(--rose-light);
+  font-size: .75rem;
+  gap: 4px;
+  text-align: center;
+  padding: 8px;
+}
+.photo-slot .photo-placeholder span { font-size: 1.6rem; }
+.photo-day-label {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(200,80,106,.75);
+  color: white;
+  font-size: .6rem;
+  text-align: center;
+  padding: 2px 0;
+  font-family: 'Lora', serif;
+}
+
+.day-message {
+  background: linear-gradient(135deg, #fff5f7, #fffdf5);
+  border-left: 3px solid var(--rose);
+  border-radius: 0 8px 8px 0;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  font-style: italic;
+  color: var(--ink);
+  font-size: .84rem;
+  line-height: 1.6;
+}
+
+.letter-body {
+  font-size: .87rem;
+  line-height: 1.8;
+  color: var(--ink);
+  white-space: pre-line;
+  margin-bottom: 14px;
+}
+.letter-sig {
+  text-align: right;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  color: var(--rose);
+  font-size: .95rem;
+}
+
+.edit-btn {
+  position: fixed; bottom: 24px; right: 24px;
+  background: var(--rose); color: white;
+  border: none; border-radius: 50px;
+  padding: 10px 20px;
+  font-family: 'Lora', serif; font-size: .85rem;
+  cursor: pointer; z-index: 100;
+  box-shadow: 0 4px 20px rgba(200,80,106,.4);
+  transition: transform .2s, box-shadow .2s;
+}
+.edit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(200,80,106,.5); }
+
+.panel {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(58,42,46,.6);
+  backdrop-filter: blur(6px);
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s;
+}
+.panel.open { opacity: 1; pointer-events: auto; }
+
+.panel-box {
+  background: white; border-radius: 16px;
+  padding: 28px; width: min(500px, 92vw);
+  max-height: 90vh; overflow-y: auto;
+  box-shadow: 0 24px 80px rgba(0,0,0,.2);
+  display: flex; flex-direction: column; gap: 14px;
+}
+.panel-title {
+  font-family: 'Playfair Display', serif;
+  color: var(--rose); font-size: 1.2rem;
+}
+.panel-section {
+  font-size: .78rem; font-weight: 600;
+  color: #c8506a; text-transform: uppercase;
+  letter-spacing: .08em; margin-top: 6px;
+  padding-top: 10px; border-top: 1px solid #f0e0e4;
+}
+label { font-size: .8rem; color: #999; display: block; margin-bottom: 4px; }
+input[type=text], input[type=date], input[type=url], textarea {
+  width: 100%; padding: 9px 13px;
+  border: 1.5px solid var(--rose-light);
+  border-radius: 8px;
+  font-family: 'Lora', serif; font-size: .86rem;
+  color: var(--ink); background: var(--rose-pale);
+  outline: none; transition: border-color .2s;
+}
+input:focus, textarea:focus { border-color: var(--rose); }
+textarea { resize: vertical; min-height: 100px; }
+
+/* PHOTO UPLOAD STYLE */
+.photo-upload-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.photo-upload-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 13px;
+  border: 1.5px dashed var(--rose-light);
+  border-radius: 8px;
+  background: var(--rose-pale);
+  color: var(--rose);
+  font-family: 'Lora', serif;
+  font-size: .84rem;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+}
+.photo-upload-btn:hover { border-color: var(--rose); background: #fde8ee; }
+.photo-preview-thumb {
+  width: 60px; height: 60px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 2px solid var(--rose-light);
+  display: none;
+}
+.photo-preview-thumb.show { display: block; }
+.photo-preview-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.photo-remove-btn {
+  background: none;
+  border: none;
+  color: #ccc;
+  font-size: .8rem;
+  cursor: pointer;
+  font-family: 'Lora', serif;
+  transition: color .2s;
+}
+.photo-remove-btn:hover { color: var(--rose); }
+
+/* MUSIC SECTION */
+.music-upload-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.music-upload-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 13px;
+  border: 1.5px dashed var(--rose-light);
+  border-radius: 8px;
+  background: var(--rose-pale);
+  color: var(--rose);
+  font-family: 'Lora', serif;
+  font-size: .84rem;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+}
+.music-upload-btn:hover { border-color: var(--rose); background: #fde8ee; }
+.music-info {
+  font-size: .78rem;
+  color: #a07880;
+  font-style: italic;
+  display: none;
+}
+.music-info.show { display: block; }
+
+/* MUSIC PLAYER BUTTON */
+.music-player-btn {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  border: 1.5px solid var(--rose-light);
+  border-radius: 50px;
+  padding: 8px 18px;
+  font-family: 'Lora', serif;
+  font-size: .82rem;
+  color: var(--rose);
+  cursor: pointer;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(200,80,106,.2);
+  transition: transform .2s, box-shadow .2s;
+  display: none;
+  gap: 6px;
+  align-items: center;
+}
+.music-player-btn.visible { display: flex; }
+.music-player-btn:hover { transform: translateX(-50%) translateY(-2px); box-shadow: 0 8px 28px rgba(200,80,106,.3); }
+
+.day-msgs { display: flex; flex-direction: column; gap: 8px; }
+.day-msg-row { display: flex; flex-direction: column; gap: 4px; }
+
+.panel-actions { display: flex; gap: 10px; margin-top: 6px; }
+.btn-save {
+  flex: 1; padding: 11px;
+  background: var(--rose); color: white;
+  border: none; border-radius: 8px;
+  font-family: 'Lora', serif; font-size: .9rem;
+  cursor: pointer; transition: background .2s;
+}
+.btn-save:hover { background: #b0445e; }
+.btn-cancel {
+  padding: 11px 18px;
+  background: transparent; color: #aaa;
+  border: 1.5px solid #ddd; border-radius: 8px;
+  font-family: 'Lora', serif; font-size: .9rem; cursor: pointer;
+}
+
+.share-btn {
+  position: fixed; bottom: 24px; left: 24px;
+  background: var(--gold); color: white;
+  border: none; border-radius: 50px;
+  padding: 10px 20px;
+  font-family: 'Lora', serif; font-size: .85rem;
+  cursor: pointer; z-index: 100;
+  box-shadow: 0 4px 20px rgba(201,169,110,.4);
+  transition: transform .2s;
+}
+.share-btn:hover { transform: translateY(-2px); }
+
+.toast {
+  position: fixed; bottom: 72px; left: 24px;
+  background: #333; color: white;
+  border-radius: 8px; padding: 10px 16px;
+  font-size: .82rem; font-family: 'Lora', serif;
+  z-index: 300; opacity: 0; transform: translateY(8px);
+  transition: all .3s; pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+
+.heart-burst {
+  position: fixed; pointer-events: none; z-index: 500;
+  font-size: 1.5rem;
+  animation: burst .85s ease-out forwards;
+}
+@keyframes burst {
+  0%   { transform: translate(0,0) scale(.5); opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(1.6); opacity: 0; }
+}
+
+.music-note {
+  position: fixed; font-size: 1.2rem;
+  pointer-events: none; z-index: 2; opacity: 0;
+  animation: noteFloat 3s ease-out forwards;
+}
+@keyframes noteFloat {
+  0%   { opacity: 0; transform: translateY(0) rotate(-10deg); }
+  20%  { opacity: .8; }
+  100% { opacity: 0; transform: translateY(-80px) rotate(18deg); }
+}
+
+.lightbox {
+  position: fixed; inset: 0; z-index: 999;
+  background: rgba(0,0,0,.85);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity .3s;
+}
+.lightbox.show { opacity: 1; pointer-events: auto; }
+.lightbox img {
+  max-width: 90vw; max-height: 88vh;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.5);
+  object-fit: contain;
+}
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-thumb { background: var(--rose-light); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+
+<div class="scene" id="scene">
+  <div class="envelope-wrap" id="env" onclick="openEnvelope()">
+    <div class="env-body"></div>
+    <div class="env-left"></div>
+    <div class="env-right"></div>
+    <div class="env-bottom"></div>
+    <div class="env-flap-wrap" id="flapWrap">
+      <div class="env-flap"></div>
+    </div>
+    <div class="seal" id="seal">💌</div>
+  </div>
+  <div class="hint" id="hint">✨ Clique no envelope para abrir ✨</div>
+</div>
+
+<div class="letter-overlay" id="letterOverlay" onclick="overlayClick(event)">
+  <div class="letter-card">
+    <button class="close-letter" onclick="closeLetter()">✕</button>
+    <div class="letter-top-bar"></div>
+    <div class="letter-inner">
+      <div class="letter-to" id="letterTo">Para: Meu Amor 🌹</div>
+      <div class="flourish">✦ ♡ ✦</div>
+      <div class="counter-banner">
+        <span class="counter-number" id="counterNum">0</span>
+        <div class="counter-label" id="counterLabel">dias juntos 💕 — data inicial não configurada</div>
+      </div>
+      <div class="photo-strip" id="photoStrip"></div>
+      <div class="day-message" id="dayMessage" style="display:none"></div>
+      <div class="letter-body" id="letterBody">Existem palavras que o silêncio guarda com mais carinho do que a voz.
+
+Estas são algumas delas:
+
+Você é a melhor parte dos meus dias. A primeira coisa em que penso quando acordo e o último sorriso antes de dormir.
+
+Obrigada por existir do jeito que você é — imperfeito, bonito e completamente meu.
+
+Com todo o meu amor,</div>
+      <div class="letter-sig" id="letterSig">Sempre sua 💕</div>
+    </div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<!-- HIDDEN FILE INPUTS -->
+<input type="file" id="filePhoto0" accept="image/*" style="display:none" onchange="handlePhotoUpload(0,this)">
+<input type="file" id="filePhoto1" accept="image/*" style="display:none" onchange="handlePhotoUpload(1,this)">
+<input type="file" id="filePhoto2" accept="image/*" style="display:none" onchange="handlePhotoUpload(2,this)">
+<input type="file" id="filePhoto3" accept="image/*" style="display:none" onchange="handlePhotoUpload(3,this)">
+<input type="file" id="fileMusic" accept="audio/*" style="display:none" onchange="handleMusicUpload(this)">
+
+<button class="edit-btn" onclick="openPanel()">✏️ Personalizar carta</button>
+<button class="share-btn" onclick="shareCard()">🔗 Compartilhar</button>
+<button class="music-player-btn" id="musicPlayerBtn" onclick="toggleMusic()">
+  <span id="musicIcon">▶</span> <span id="musicLabel">Tocar música</span>
+</button>
+<div class="toast" id="toast">📋 Link copiado! Compartilhe com quem você ama 💕</div>
+
+<!-- AUDIO ELEMENT -->
+<audio id="bgAudio" loop></audio>
+
+<!-- EDIT PANEL -->
+<div class="panel" id="panel">
+  <div class="panel-box">
+    <div class="panel-title">💌 Personalizar carta</div>
+
+    <div class="panel-section">📅 Contador de dias</div>
+    <div>
+      <label>Data de início do relacionamento</label>
+      <input type="date" id="inDate">
+    </div>
+
+    <div class="panel-section">💌 Carta</div>
+    <div>
+      <label>Para quem é?</label>
+      <input type="text" id="inTo" placeholder="Para: Meu Amor 🌹">
+    </div>
+    <div>
+      <label>Mensagem principal</label>
+      <textarea id="inBody"></textarea>
+    </div>
+    <div>
+      <label>Assinatura</label>
+      <input type="text" id="inSig" placeholder="Sempre sua 💕">
+    </div>
+
+    <div class="panel-section">🖼️ Fotos por fase</div>
+    <div class="photo-inputs" id="photoInputs">
+      <!-- generated by JS -->
+    </div>
+
+    <div class="panel-section">🎵 Música de fundo</div>
+    <div class="music-upload-row">
+      <label>Escolha um arquivo de áudio do seu iPhone (MP3, AAC, M4A)</label>
+      <div class="music-upload-btn" onclick="document.getElementById('fileMusic').click()">
+        🎵 Escolher música da galeria
+      </div>
+      <div class="music-info" id="musicInfo"></div>
+    </div>
+
+    <div class="panel-section">💬 Mensagens especiais por fase</div>
+    <div style="font-size:.78rem;color:#aaa;margin-top:-6px">Cada mensagem aparece na fase correspondente</div>
+    <div class="day-msgs" id="dayMsgInputs">
+      <!-- generated by JS -->
+    </div>
+
+    <div class="panel-actions">
+      <button class="btn-save" onclick="saveCard()">💾 Salvar</button>
+      <button class="btn-cancel" onclick="closePanel()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── DEFAULT DATA ───────────────────────────────────────────────
+const DEFAULTS = {
+  to: 'Para: Meu Amor 🌹',
+  body: `Existem palavras que o silêncio guarda com mais carinho do que a voz.
+
+Estas são algumas delas:
+
+Você é a melhor parte dos meus dias. A primeira coisa em que penso quando acordo e o último sorriso antes de dormir.
+
+Obrigada por existir do jeito que você é — imperfeito, bonito e completamente meu.
+
+Com todo o meu amor,`,
+  sig: 'Sempre sua 💕',
+  startDate: '',
+  photos: ['','','',''],
+  dayMessages: [
+    'Nosso começo foi tímido e lindo. 🌱',
+    'Um mês juntos e já parecia que te conhecia há sempre. 🌸',
+    'Seis meses e cada dia continua parecendo um presente. 🌺',
+    'Um ano inteiro de você. Ainda não acredito na minha sorte. 🌹'
+  ]
+};
+
+const PHASE_LABELS = ['1–30 dias','31–180 dias','181–365 dias','365+ dias'];
+const PHASE_DAYS   = [1, 31, 181, 365];
+
+// ─── STATE ──────────────────────────────────────────────────────
+let data = {};
+// photoBlobs: base64 strings stored in localStorage
+// musicBlob: base64 string stored in localStorage
+
+function loadData() {
+  try { data = JSON.parse(localStorage.getItem('cartaV3') || '{}'); } catch(e) { data = {}; }
+  data = { ...DEFAULTS, ...data };
+  data.photos      = (data.photos      && data.photos.length === 4) ? data.photos      : [...DEFAULTS.photos];
+  data.dayMessages = (data.dayMessages && data.dayMessages.length === 4) ? data.dayMessages : [...DEFAULTS.dayMessages];
+}
+
+function saveData() {
+  // Save everything including base64 images and audio
+  localStorage.setItem('cartaV3', JSON.stringify(data));
+}
+
+// ─── COUNTER & PHASE ────────────────────────────────────────────
+function getDays() {
+  if (!data.startDate) return null;
+  const start = new Date(data.startDate + 'T00:00:00');
+  const today  = new Date(); today.setHours(0,0,0,0);
+  return Math.max(0, Math.floor((today - start) / 86400000));
+}
+
+function getPhase(days) {
+  if (days === null) return 0;
+  if (days < 31)  return 0;
+  if (days < 181) return 1;
+  if (days < 365) return 2;
+  return 3;
+}
+
+function renderCounter() {
+  const days  = getDays();
+  const phase = getPhase(days);
+  const num   = document.getElementById('counterNum');
+  const lbl   = document.getElementById('counterLabel');
+  if (days === null) {
+    num.textContent = '♡';
+    lbl.textContent = 'Configure a data de início ✨';
+  } else {
+    num.textContent = days;
+    lbl.textContent = `dias juntos 💕 — ${PHASE_LABELS[phase]}`;
+  }
+}
+
+// ─── PHOTO STRIP ────────────────────────────────────────────────
+function renderPhotos() {
+  const strip = document.getElementById('photoStrip');
+  strip.innerHTML = '';
+  const days  = getDays();
+  const phase = getPhase(days);
+
+  data.photos.forEach((url, i) => {
+    const slot = document.createElement('div');
+    slot.className = 'photo-slot';
+    if (i === phase) {
+      slot.style.borderColor = 'var(--rose)';
+      slot.style.boxShadow = '0 0 0 2px rgba(200,80,106,.25)';
+    }
+    if (url) {
+      const img = document.createElement('img');
+      img.src = url;
+      img.alt = PHASE_LABELS[i];
+      img.onerror = () => { img.style.display='none'; placeholder(); }
+      slot.appendChild(img);
+      slot.onclick = () => openLightbox(url);
+    } else {
+      placeholder();
+    }
+    function placeholder() {
+      const ph = document.createElement('div');
+      ph.className = 'photo-placeholder';
+      ph.innerHTML = `<span>📷</span>${PHASE_LABELS[i]}`;
+      slot.appendChild(ph);
+      slot.onclick = () => openPanel();
+    }
+    const lbl = document.createElement('div');
+    lbl.className = 'photo-day-label';
+    lbl.textContent = PHASE_LABELS[i];
+    slot.appendChild(lbl);
+    strip.appendChild(slot);
+  });
+}
+
+// ─── DAY MESSAGE ────────────────────────────────────────────────
+function renderDayMessage() {
+  const el    = document.getElementById('dayMessage');
+  const days  = getDays();
+  const phase = getPhase(days);
+  const msg   = data.dayMessages[phase];
+  if (msg && msg.trim()) {
+    el.textContent = msg;
+    el.style.display = 'block';
+  } else {
+    el.style.display = 'none';
+  }
+}
+
+// ─── RENDER LETTER ──────────────────────────────────────────────
+function renderLetter() {
+  document.getElementById('letterTo').textContent   = data.to   || DEFAULTS.to;
+  document.getElementById('letterBody').textContent = data.body || DEFAULTS.body;
+  document.getElementById('letterSig').textContent  = data.sig  || DEFAULTS.sig;
+  renderCounter();
+  renderPhotos();
+  renderDayMessage();
+  updateMusicPlayer();
+}
+
+// ─── PHOTO UPLOAD ────────────────────────────────────────────────
+function handlePhotoUpload(index, input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const base64 = e.target.result;
+    data.photos[index] = base64;
+    // Update preview in panel
+    const thumb = document.getElementById(`thumb${index}`);
+    const removeBtn = document.getElementById(`removePhoto${index}`);
+    if (thumb) {
+      thumb.src = base64;
+      thumb.classList.add('show');
+    }
+    if (removeBtn) removeBtn.style.display = 'inline';
+    renderPhotos();
+  };
+  reader.readAsDataURL(file);
+}
+
+function removePhoto(index) {
+  data.photos[index] = '';
+  const thumb = document.getElementById(`thumb${index}`);
+  const removeBtn = document.getElementById(`removePhoto${index}`);
+  if (thumb) { thumb.src=''; thumb.classList.remove('show'); }
+  if (removeBtn) removeBtn.style.display = 'none';
+  renderPhotos();
+}
+
+// ─── MUSIC UPLOAD ────────────────────────────────────────────────
+function handleMusicUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    data.musicBase64 = e.target.result;
+    data.musicName = file.name;
+    const info = document.getElementById('musicInfo');
+    if (info) {
+      info.textContent = `🎵 ${file.name}`;
+      info.classList.add('show');
+    }
+    updateMusicPlayer();
+  };
+  reader.readAsDataURL(file);
+}
+
+function updateMusicPlayer() {
+  const btn = document.getElementById('musicPlayerBtn');
+  const audio = document.getElementById('bgAudio');
+  if (data.musicBase64) {
+    btn.classList.add('visible');
+    if (audio.src !== data.musicBase64) {
+      const wasPlaying = !audio.paused;
+      audio.src = data.musicBase64;
+      if (wasPlaying) audio.play().catch(()=>{});
+    }
+  } else {
+    btn.classList.remove('visible');
+    audio.pause();
+    audio.src = '';
+  }
+}
+
+let musicPlaying = false;
+function toggleMusic() {
+  const audio = document.getElementById('bgAudio');
+  const icon = document.getElementById('musicIcon');
+  const label = document.getElementById('musicLabel');
+  if (!data.musicBase64) return;
+  if (audio.paused) {
+    audio.play().then(() => {
+      musicPlaying = true;
+      icon.textContent = '⏸';
+      label.textContent = 'Pausar música';
+    }).catch(() => {});
+  } else {
+    audio.pause();
+    musicPlaying = false;
+    icon.textContent = '▶';
+    label.textContent = 'Tocar música';
+  }
+}
+
+// ─── PETALS ─────────────────────────────────────────────────────
+const EMOJI = ['🌸','🌹','🌺','🌷','💮'];
+for (let i = 0; i < 16; i++) {
+  const p = document.createElement('div');
+  p.className = 'petal';
+  p.textContent = EMOJI[Math.floor(Math.random() * EMOJI.length)];
+  p.style.cssText = `left:${Math.random()*100}vw;font-size:${.6+Math.random()*.7}rem;animation-duration:${9+Math.random()*12}s;animation-delay:${Math.random()*14}s`;
+  document.body.appendChild(p);
+}
+
+// ─── ENVELOPE OPEN ──────────────────────────────────────────────
+let opened = false;
+function openEnvelope() {
+  if (opened) return;
+  opened = true;
+  document.getElementById('hint').style.opacity = '0';
+  document.getElementById('flapWrap').style.transform = 'rotateX(-180deg)';
+  document.getElementById('seal').style.opacity = '0';
+  document.getElementById('seal').style.transform = 'translate(-50%,-50%) scale(.3)';
+  burstHearts();
+  setTimeout(() => {
+    document.getElementById('letterOverlay').classList.add('show');
+    setTimeout(() => floatNotes(), 300);
+  }, 700);
+}
+
+function closeLetter() {
+  document.getElementById('letterOverlay').classList.remove('show');
+}
+function overlayClick(e) {
+  if (e.target === document.getElementById('letterOverlay')) closeLetter();
+}
+
+// ─── HEARTS ─────────────────────────────────────────────────────
+function burstHearts() {
+  const rect = document.getElementById('env').getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top  + rect.height / 2;
+  const symbols = ['❤️','💕','💗','💖','💝','🩷'];
+  for (let i = 0; i < 14; i++) {
+    const el = document.createElement('div');
+    el.className = 'heart-burst';
+    el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    const angle = (i / 14) * Math.PI * 2;
+    const dist  = 70 + Math.random() * 90;
+    el.style.cssText = `left:${cx}px;top:${cy}px;--dx:${Math.cos(angle)*dist}px;--dy:${Math.sin(angle)*dist}px;animation-delay:${Math.random()*.25}s`;
+    document.body.appendChild(el);
+    el.addEventListener('animationend', () => el.remove());
+  }
+}
+
+function floatNotes() {
+  const notes = ['♪','♫','♩','🎵','🎶'];
+  for (let i = 0; i < 5; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'music-note';
+      el.textContent = notes[Math.floor(Math.random() * notes.length)];
+      el.style.cssText = `left:${25+Math.random()*50}vw;bottom:28vh;color:var(--rose)`;
+      document.body.appendChild(el);
+      el.addEventListener('animationend', () => el.remove());
+    }, i * 380);
+  }
+}
+
+// ─── LIGHTBOX ───────────────────────────────────────────────────
+function openLightbox(url) {
+  document.getElementById('lightboxImg').src = url;
+  document.getElementById('lightbox').classList.add('show');
+}
+function closeLightbox() { document.getElementById('lightbox').classList.remove('show'); }
+
+// ─── SPARKLES ───────────────────────────────────────────────────
+document.addEventListener('mousemove', e => {
+  if (Math.random() > .97) {
+    const s = document.createElement('div');
+    const dx = (Math.random()-.5)*40, dy = -20-Math.random()*30;
+    s.style.cssText = `position:fixed;left:${e.clientX}px;top:${e.clientY}px;pointer-events:none;z-index:1;font-size:.75rem;color:var(--rose);animation:burst .6s ease-out forwards;--dx:${dx}px;--dy:${dy}px`;
+    s.textContent = ['✦','✧','⋆','·'][Math.floor(Math.random()*4)];
+    document.body.appendChild(s);
+    s.addEventListener('animationend', () => s.remove());
+  }
+});
+
+// ─── PANEL ──────────────────────────────────────────────────────
+function buildPanelInputs() {
+  const pi = document.getElementById('photoInputs');
+  pi.innerHTML = '';
+  data.photos.forEach((url, i) => {
+    const hasPhoto = url && url.length > 0;
+    pi.innerHTML += `
+      <div class="photo-upload-row">
+        <label>Foto fase ${i+1}: ${PHASE_LABELS[i]}</label>
+        <div class="photo-preview-row">
+          <img class="photo-preview-thumb ${hasPhoto ? 'show' : ''}" id="thumb${i}" src="${hasPhoto ? url : ''}" alt="">
+          <div style="flex:1">
+            <div class="photo-upload-btn" onclick="document.getElementById('filePhoto${i}').click()">
+              📷 ${hasPhoto ? 'Trocar foto' : 'Escolher foto da galeria'}
+            </div>
+          </div>
+          <button class="photo-remove-btn" id="removePhoto${i}" onclick="removePhoto(${i})" style="display:${hasPhoto ? 'inline' : 'none'}">✕ Remover</button>
+        </div>
+      </div>`;
+  });
+
+  // Music info
+  const musicInfo = document.getElementById('musicInfo');
+  if (data.musicName) {
+    musicInfo.textContent = `🎵 ${data.musicName}`;
+    musicInfo.classList.add('show');
+  } else {
+    musicInfo.textContent = '';
+    musicInfo.classList.remove('show');
+  }
+
+  // day message inputs
+  const dm = document.getElementById('dayMsgInputs');
+  dm.innerHTML = '';
+  data.dayMessages.forEach((msg, i) => {
+    dm.innerHTML += `
+      <div class="day-msg-row">
+        <label>Mensagem fase ${i+1}: ${PHASE_LABELS[i]}</label>
+        <input type="text" id="inDayMsg${i}" value="${msg.replace(/"/g,'&quot;').replace(/'/g,'&#39;')}" placeholder="Uma frase especial...">
+      </div>`;
+  });
+
+  document.getElementById('inTo').value   = data.to;
+  document.getElementById('inBody').value = data.body;
+  document.getElementById('inSig').value  = data.sig;
+  document.getElementById('inDate').value = data.startDate || '';
+}
+
+function openPanel() {
+  buildPanelInputs();
+  document.getElementById('panel').classList.add('open');
+}
+function closePanel() { document.getElementById('panel').classList.remove('open'); }
+document.getElementById('panel').addEventListener('click', e => {
+  if (e.target === document.getElementById('panel')) closePanel();
+});
+
+function saveCard() {
+  data.to        = document.getElementById('inTo').value.trim()   || DEFAULTS.to;
+  data.body      = document.getElementById('inBody').value.trim() || DEFAULTS.body;
+  data.sig       = document.getElementById('inSig').value.trim()  || DEFAULTS.sig;
+  data.startDate = document.getElementById('inDate').value;
+  data.dayMessages = [0,1,2,3].map(i => document.getElementById(`inDayMsg${i}`).value.trim());
+  // photos already updated live via handlePhotoUpload
+  saveData();
+  renderLetter();
+  closePanel();
+  opened = false;
+  document.getElementById('flapWrap').style.transform = '';
+  document.getElementById('seal').style.opacity = '1';
+  document.getElementById('seal').style.transform = 'translate(-50%,-50%) scale(1)';
+  document.getElementById('hint').style.opacity = '1';
+  document.getElementById('letterOverlay').classList.remove('show');
+}
+
+// ─── SHARE ──────────────────────────────────────────────────────
+function shareCard() {
+  // Share only text data, not images/audio (too large for URL)
+  const shareData = {
+    to: data.to,
+    body: data.body,
+    sig: data.sig,
+    startDate: data.startDate,
+    dayMessages: data.dayMessages
+  };
+  const encoded = btoa(encodeURIComponent(JSON.stringify(shareData)));
+  const url = location.href.split('?')[0] + '?carta=' + encoded;
+  navigator.clipboard.writeText(url).catch(() => {});
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ─── READ SHARED LINK ───────────────────────────────────────────
+(function() {
+  const c = new URLSearchParams(location.search).get('carta');
+  if (c) {
+    try {
+      const parsed = JSON.parse(decodeURIComponent(atob(c)));
+      loadData(); // load local first (for images/music)
+      // override text fields from URL
+      data.to = parsed.to || data.to;
+      data.body = parsed.body || data.body;
+      data.sig = parsed.sig || data.sig;
+      data.startDate = parsed.startDate || data.startDate;
+      if (parsed.dayMessages && parsed.dayMessages.length === 4) data.dayMessages = parsed.dayMessages;
+    } catch(e) { loadData(); }
+  } else {
+    loadData();
+  }
+  renderLetter();
+})();
+</script>
+</body>
+</html>
