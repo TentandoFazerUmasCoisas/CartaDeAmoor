@@ -870,7 +870,7 @@ function handleMusicUpload(input) {
   const reader = new FileReader();
   reader.onload = (e) => {
     data.musicBase64 = e.target.result;
-    data.musicName = file.name;
+    data.musicName = 'música.mp3';
     const info = document.getElementById('musicInfo');
     if (info) {
       info.textContent = `🎵 ${file.name}`;
